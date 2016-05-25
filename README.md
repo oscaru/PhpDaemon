@@ -11,3 +11,15 @@ Richard Stevenson describes the following steps for writing daemons:
     7- Record the pid (process ID number) in the pid-file: /var/run/projectname.pid.
     8- Correctly process the signals and SigTerm SigHup: end with the destruction of all child processes and pid - files and / or re-configuration.
 
+
+Return Status
+
+0 : Success - we’ve exited normally.
+1 : General Error - usually used for application/language specific errors and syntax errors
+2 : Incorrect Usage
+126 : Command is not executable - usually permissions related
+127 : Command Not Found
+128+N (up to 165): Command terminated by POSIX Signal number N - e.g. In the case of
+kill -9 myscript.php it should return code 137 (128+9)
+130 : Command terminated by Ctrl-C (Ctrl-C is POSIX code 2)
+
