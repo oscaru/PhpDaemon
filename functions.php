@@ -1,19 +1,6 @@
 <?php
 
-function debug($string){
-    if(!DEBUG) return;
-    $now = date('Y-m-d H:i:s');
-    echo "{$now} >> DEBUG : {$string} \n";
-}
 
-
-function daemonize (){
-
-  
-
-
-
-}
 
 
 function sig_handler($signo)

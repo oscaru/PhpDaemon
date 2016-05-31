@@ -20,6 +20,7 @@ Return Status
 126 : Command is not executable - usually permissions related
 127 : Command Not Found
 128+N (up to 165): Command terminated by POSIX Signal number N - e.g. In the case of
+
 kill -9 myscript.php it should return code 137 (128+9)
 130 : Command terminated by Ctrl-C (Ctrl-C is POSIX code 2)
 
