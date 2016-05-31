@@ -163,7 +163,6 @@ class Daemon
     
     public static function errorHandler($errno, $errstr, $errfile, $errline)
     {
-        
         self::debug(" ERROR : $errno, $errstr, $errfile, $errline ");
         return true;
     }
