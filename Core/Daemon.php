@@ -29,6 +29,9 @@ class Daemon {
     
     public static function checkins()
     {
+        
+        
+        
         // Check the PHP configuration
         if (!defined('SIGHUP')) {
             $msg = 'PHP is compiled without --enable-pcntl directive';
@@ -51,6 +54,8 @@ class Daemon {
         if (function_exists('gc_enable')) {
             gc_enable();
         }
+        
+       
     }
     
     
@@ -90,7 +95,7 @@ class Daemon {
         $sid = posix_setsid();// § 3
         if ($sid < 0) exit (2);
 
-        chdir(DAEMON_ROOTDIR); // § 4
+        //chdir(DAEMON_ROOTDIR); // § 4
 
 
         // Closes an open file descriptors system STDIN, STDOUT, STDERR
