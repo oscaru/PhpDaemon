@@ -17,6 +17,9 @@ class Daemon {
     protected static $signalAllowed = array(
         SIGTERM, SIGHUP, SIGCHLD, SIGUSR1, SIGUSR2
     );
+    protected static $taskManager;
+    
+    
     
     
     public  static function start()
@@ -26,6 +29,9 @@ class Daemon {
         self::daemonize();
         
     }
+    
+    
+    
     
     public static function checkins()
     {

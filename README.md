@@ -24,3 +24,5 @@ Return Status
 kill -9 myscript.php it should return code 137 (128+9)
 130 : Command terminated by Ctrl-C (Ctrl-C is POSIX code 2)
 
+Example to send signals
+killall -s SIGUSR2 php
