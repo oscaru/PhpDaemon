@@ -13,27 +13,36 @@ namespace Core ;
 
 class Daemon {
     
-    protected static $signHandlers = array();
-    protected static $signalAllowed = array(
+    protected  $signHandlers = array();
+    protected  $signalAllowed = array(
         SIGTERM, SIGHUP, SIGCHLD, SIGUSR1, SIGUSR2
     );
-    protected static $taskManager;
+    protected  $taskManager;
+    protected static  $intance = null;
     
+    static function getInstance(){
+        if(empty(self::$intance)){
+            self::$intance = new Daemon();
+        }
+        return self::$intance;
+    }
     
+    private function __construct() {
+       
+    }
     
-    
-    public  static function start()
+    public   function start()
     {
         //set_error_handler(array('\Core\Daemon', 'errorHandler'), E_ALL);
-        self::checkins();
-        self::daemonize();
+        $this->checkins();
+        $this->daemonize();
         
     }
     
     
     
     
-    public static function checkins()
+    public  function checkins()
     {
         
         
@@ -66,7 +75,7 @@ class Daemon {
     
     
 
-    static function daemonize(){
+     function daemonize(){
        
         /*
          * 1 - Resetting the file mode creation mask to 0 function umask(), 
@@ -97,7 +106,7 @@ class Daemon {
         } 
         // (pid = 0) child process
         
-        self::debug( "daemon process started ".  getmypid() );    
+        $this->debug( "daemon process started ".  getmypid() );    
         $sid = posix_setsid();// § 3
         if ($sid < 0) exit (2);
 
@@ -135,25 +144,25 @@ class Daemon {
         error_reporting(E_ALL);
         ini_set('error_log', DAEMON_ERR); // set log file
         echo $er;
-        self::debug(  "DAEMON PID :". getmypid() );
+        $this->debug(  "DAEMON PID :". getmypid() );
         
         declare(ticks = 5);
         
-        foreach (self::$signalAllowed as $signal ) {
-            $handler = (!empty(self::$signHandlers[$signal]))? 
-                    self::$signHandlers[$signal] 
+        foreach ($this->signalAllowed as $signal ) {
+            $handler = (!empty($this->signHandlers[$signal]))? 
+                    $this->signHandlers[$signal] 
                     : array('\Core\Daemon', 'defaultSignHandler');
             
             
             
             if ($handler && !is_callable($handler) && $handler != SIG_IGN && $handler != SIG_DFL) {
-                return self::debug(
+                return $this->debug(
                     'You want to assign signal %s to handler %s but ' .
                     'it\'s not callable'
                    
                 );
             } else if (!pcntl_signal($signal, $handler)) {
-                return self::debug('Unable to reroute signal handler: '.$signal );
+                return $this->debug('Unable to reroute signal handler: '.$signal );
             }
         }
         
@@ -165,7 +174,7 @@ class Daemon {
         }; // cycle start data
     }
     
-    protected static function debug($string)
+    protected  function debug($string)
     {
         if(!DEBUG) return;
         $now = date('Y-m-d H:i:s');
@@ -174,7 +183,7 @@ class Daemon {
     
     
     
-    static function defaultSignHandler($signo)
+     function defaultSignHandler($signo)
     {
         
         switch ($signo) {
@@ -182,7 +191,7 @@ class Daemon {
    
                 break;
             default:
-                self::debug(   "echo CORE STATIC SIGAL PID :". $signo );
+                $this->debug(   "echo CORE STATIC SIGAL PID :". $signo );
     
         }
     }
@@ -191,5 +200,5 @@ class Daemon {
 
 
 
-\Core\Daemon::start();
+
 
