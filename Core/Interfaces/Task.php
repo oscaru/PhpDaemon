@@ -9,6 +9,9 @@ namespace Core\Interfaces;
  * All plugins are passed a reference to the Core_Daemon application object when they are instantiated.
  */
 interface Task {
+    
+    public function getUid();
+    
     /**
      * Called on Construct or Init
      * @return void

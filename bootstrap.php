@@ -49,8 +49,20 @@ if (isset($opts['config'])) {
 ini_set('display_errors', \Core\Config::get('display_errors'));
 define ('DEBUG' , $debug);
 
+<<<<<<< HEAD
 
 date_default_timezone_set(\Core\Config::get('timezone'));
+
+=======
+
+
+if ($debug){
+    ini_set('display_errors', \Core\Config::get('display_errors'));
+    error_reporting(E_ALL);
+}
+>>>>>>> 0732b5d747aa2e3463da0c11396400afa4e2b117
+
+define ('DEBUG' , $debug);
 
 
 define ('DAEMON_LOGDIR', \Core\Config::get('log_dir') );
@@ -63,5 +75,5 @@ define ('MIN_RESTART_SECONDS', 10);
 
 
 
-\Core\Daemon::start();
+\Core\Daemon::getInstance()->start();
 
