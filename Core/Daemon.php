@@ -13,16 +13,15 @@ namespace Core ;
 
 class Daemon {
     
-<<<<<<< HEAD
+
     protected static  $instance = null;
-=======
->>>>>>> 0732b5d747aa2e3463da0c11396400afa4e2b117
+
     protected  $signHandlers = array();
     protected  $signalAllowed = array(
         SIGTERM, SIGHUP, SIGCHLD, SIGUSR1, SIGUSR2
     );
-<<<<<<< HEAD
-            
+
+    protected  $taskManager;        
     
     private function __construct() {
         
@@ -32,43 +31,20 @@ class Daemon {
         if(!self::$instance){
             self::$instance = new Daemon();
         }
-        return self::$instance;
-=======
-    protected  $taskManager;
-    protected static  $intance = null;
-    
-    static function getInstance(){
-        if(empty(self::$intance)){
-            self::$intance = new Daemon();
-        }
-        return self::$intance;
->>>>>>> 0732b5d747aa2e3463da0c11396400afa4e2b117
+         return self::$instance;
     }
-    
-    private function __construct() {
-       
-    }
-    
-<<<<<<< HEAD
-    public function start()
-=======
-    public   function start()
->>>>>>> 0732b5d747aa2e3463da0c11396400afa4e2b117
-    {
+   
+
+    public   function start() {
         //set_error_handler(array('\Core\Daemon', 'errorHandler'), E_ALL);
         $this->checkins();
         $this->daemonize();
         
     }
     
-    
-    
-    
-<<<<<<< HEAD
+
     public function checkins()
-=======
-    public  function checkins()
->>>>>>> 0732b5d747aa2e3463da0c11396400afa4e2b117
+
     {
         // Check the PHP configuration
         if (!defined('SIGHUP')) {
@@ -96,13 +72,10 @@ class Daemon {
     
     
 
-<<<<<<< HEAD
+
     public  function daemonize()
     {
-=======
-     function daemonize(){
-       
->>>>>>> 0732b5d747aa2e3463da0c11396400afa4e2b117
+
         /*
          * 1 - Resetting the file mode creation mask to 0 function umask(), 
          * to mask some bits of access rights from the starting process.
@@ -170,11 +143,8 @@ class Daemon {
        
         ini_set('display_errors', \Core\Config::get('display_errors'));
         ini_set('error_log', DAEMON_ERR); // set log file
-<<<<<<< HEAD
-       
-=======
-        echo $er;
->>>>>>> 0732b5d747aa2e3463da0c11396400afa4e2b117
+
+
         $this->debug(  "DAEMON PID :". getmypid() );
         
         declare(ticks = 5);
@@ -230,10 +200,4 @@ class Daemon {
 }
 
 
-
-<<<<<<< HEAD
-\Core\Daemon::getInstance()->start();
-=======
-
->>>>>>> 0732b5d747aa2e3463da0c11396400afa4e2b117
 
