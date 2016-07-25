@@ -15,6 +15,7 @@ class Daemon {
     
 
     protected static  $instance = null;
+    
 
     protected  $signHandlers = array();
     protected  $signalAllowed = array(
@@ -39,6 +40,11 @@ class Daemon {
         //set_error_handler(array('\Core\Daemon', 'errorHandler'), E_ALL);
         $this->checkins();
         $this->daemonize();
+        
+        
+        
+        
+        $this->runLoop();
         
     }
     
@@ -157,17 +163,23 @@ class Daemon {
             
             
             if ($handler && !is_callable($handler) && $handler != SIG_IGN && $handler != SIG_DFL) {
-                return $this->debug(
+                $this->debug(
                     'You want to assign signal %s to handler %s but ' .
                     'it\'s not callable'
                    
                 );
+                return FALSE;
+                
             } else if (!pcntl_signal($signal, $handler)) {
-                return $this->debug('Unable to reroute signal handler: '.$signal );
+               $this->debug('Unable to reroute signal handler: '.$signal );
+               return FALSE;
             }
         }
         
-        
+        return TRUE;
+    }
+
+    function runLoop(){        
         
         while(true){  
             pcntl_signal_dispatch();

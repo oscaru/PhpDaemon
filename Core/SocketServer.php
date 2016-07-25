@@ -1,6 +1,6 @@
 <?php
 
-class MySocketServer
+class SocketServer
 {
     protected $socket;
     protected $clients = [];
@@ -57,7 +57,7 @@ class MySocketServer
     {
         foreach ($this->changed as $key => $socket) {
             $buffer = null;
-            while(socket_recv($socket, $buffer, 1024, 0) >= 1) {
+            if(socket_recv($socket, $buffer, 1024, 0) >= 1) {
                 $this->sendMessage(trim($buffer) . PHP_EOL, $this->getOtherClients($socket));
                 unset($this->changed[$key]);
                 break;

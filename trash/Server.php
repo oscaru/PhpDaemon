@@ -11,7 +11,7 @@ socket_listen($socket);
 
 
 // Initialize the buffer
-$buffer = "NO DATA";
+
 
 while(true) {
     // Accept any connections coming in on this socket
