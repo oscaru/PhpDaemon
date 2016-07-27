@@ -22,7 +22,8 @@ class Daemon {
         SIGTERM, SIGHUP, SIGCHLD, SIGUSR1, SIGUSR2
     );
 
-    protected  $taskManager;        
+    protected  $taskManager;    
+    protected  $socketServer = null;        
     
     private function __construct() {
         
@@ -35,15 +36,26 @@ class Daemon {
          return self::$instance;
     }
    
-
+    public function setTaskManager(TaskManager $taskManager){
+        $this->taskManager =$taskManager;
+        
+    }
+    
     public   function start() {
         //set_error_handler(array('\Core\Daemon', 'errorHandler'), E_ALL);
+        
         $this->checkins();
         $this->daemonize();
+          
+  
+        if($this->taskManager){
+            $server = new \Core\SocketServer();
+            $server->setTaskManager($this->taskManager);
+            $this->socketServer = $server;
+            
+        }
         
-        
-        
-        
+     
         $this->runLoop();
         
     }
@@ -183,6 +195,7 @@ class Daemon {
         
         while(true){  
             pcntl_signal_dispatch();
+            $this->socketServer->SockectLoop(); //socket loop;
             
         }; // cycle start data
     }

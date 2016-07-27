@@ -1,10 +1,10 @@
 <?php
 
-$srcRoot = __DIR__.'/Core';
+$srcRoots = array('/Core','/Core/ezsql');
 $buildRoot = __DIR__."/";
 $buildFileName = "daemon.phar";
 $buildFile  = $buildRoot . $buildFileName;
-$basePointer = strpos($srcRoot,'Core');
+
 
 
 if (file_exists( $buildFile.'.zip')) {
@@ -31,14 +31,18 @@ $files["functions.php"] = __DIR__ . "/functions.php";
 $files["bootstrap.php"] = __DIR__ . "/bootstrap.php";
 
 
- 
-$rd = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($srcRoot));
-foreach($rd as $file) {
-    if ($file->getFilename() != '..' && $file->getFilename() != '.') {
-        $files[substr($file->getPath().DIRECTORY_SEPARATOR.$file->getFilename(),$basePointer)]=$file->getPath().DIRECTORY_SEPARATOR.$file->getFilename();
+foreach($srcRoots as $src){
+    $srcRoot = __DIR__.$src;
+    $basePointer = strpos($srcRoot,'Core');
+    
+    $rd = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($srcRoot));
+    foreach($rd as $file) {
+        if(is_dir($file)) continue;
+        if ($file->getFilename() != '..' && $file->getFilename() != '.') {
+            $files[substr($file->getPath().DIRECTORY_SEPARATOR.$file->getFilename(),$basePointer)]=$file->getPath().DIRECTORY_SEPARATOR.$file->getFilename();
+        }
     }
 }
-
 
 
 $phar->startBuffering();

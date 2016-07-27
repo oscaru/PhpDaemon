@@ -2,9 +2,19 @@
 
 //killall -s SIGUSR2 php
 
+
+
+ini_set("log_errors", 1);
+ini_set("error_log", "/tmp/php-error.log");
+
+
+
+
 require __DIR__.'/config.php';
 require __DIR__.'/autoload.php';
 require __DIR__.'/functions.php';
+require __DIR__.'/Core/ezsql/ez_sql_core.php';
+require __DIR__.'/Core/ezsql/ez_sql_mysqli.php';
 
 
 /*
@@ -43,15 +53,13 @@ if (isset($opts['config'])) {
 \Core\Config::setArray($config);
 
 
-/**
- *  Si opcion --debug 
- */
-ini_set('display_errors', \Core\Config::get('display_errors'));
-define ('DEBUG' , $debug);
-
 
 
 date_default_timezone_set(\Core\Config::get('timezone'));
+
+/**
+ *  Si opcion --debug 
+ */
 
 if ($debug){
     ini_set('display_errors', \Core\Config::get('display_errors'));
@@ -72,5 +80,22 @@ define ('MIN_RESTART_SECONDS', 10);
 
 
 
-\Core\Daemon::getInstance()->start();
+$dbuser = \Core\Config::get('dbuser');
+$dbpassword = \Core\Config::get('dbpassword');
+$dbname = \Core\Config::get('dbname');
+$dbhost = \Core\Config::get('dbhost');
+
+$db = new ezSQL_mysqli($dbuser, $dbpassword, $dbname, $dbhost);
+$db->query("SET NAMES 'utf8'");
+$db->query("SET time_zone = '+00:00';");
+
+
+
+
+$taskManager = new \Core\TaskManager($db);
+
+$daemon = \Core\Daemon::getInstance();
+$daemon->setTaskManager($taskManager);
+
+$daemon->start();
 

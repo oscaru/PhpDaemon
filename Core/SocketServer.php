@@ -1,10 +1,14 @@
 <?php
 
+namespace Core ;
+
 class SocketServer
 {
     protected $socket;
     protected $clients = [];
     protected $changed;
+    
+    protected $taskManager = NULL;
    
     function __construct($host = '127.0.0.1', $port = 9000)
     {
@@ -19,6 +23,10 @@ class SocketServer
         $this->socket = $socket;
     }
    
+    public function setTaskManager(TaskManager $taskManager){
+        $this->taskManager = $taskManager;
+    }
+    
     function __destruct()
     {
         foreach($this->clients as $client) {
@@ -27,14 +35,12 @@ class SocketServer
         socket_close($this->socket);
     }
    
-    function run()
+    function SockectLoop()
     {
-        while(true) {
             $this->waitForChange();
             $this->checkNewClients();
             $this->checkMessageRecieved();
             $this->checkDisconnect();
-        }
     }
    
     function checkDisconnect()
@@ -58,7 +64,13 @@ class SocketServer
         foreach ($this->changed as $key => $socket) {
             $buffer = null;
             if(socket_recv($socket, $buffer, 1024, 0) >= 1) {
-                $this->sendMessage(trim($buffer) . PHP_EOL, $this->getOtherClients($socket));
+                
+                if(FALSE && $this->taskManager){
+                    $response = $this->taskManager->socketRequest($buffer);
+                    $this->sendMessage($response, array($socket));
+                }else{
+                    $this->sendMessage(trim($buffer) . PHP_EOL, $this->getOtherClients($socket));
+                }
                 unset($this->changed[$key]);
                 break;
             }
@@ -113,4 +125,3 @@ class SocketServer
     }
 }
 
-(new MySocketServer())->run();
