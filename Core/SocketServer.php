@@ -8,7 +8,8 @@ class SocketServer
     protected $clients = [];
     protected $changed;
     
-    protected $taskManager = NULL;
+    
+    protected $callback = NULL;
    
     function __construct($host = '127.0.0.1', $port = 9000)
     {
@@ -23,8 +24,8 @@ class SocketServer
         $this->socket = $socket;
     }
    
-    public function setTaskManager(TaskManager $taskManager){
-        $this->taskManager = $taskManager;
+    public function setCallBack($callback){
+        $this->callback = $callback;
     }
     
     function __destruct()
@@ -65,8 +66,8 @@ class SocketServer
             $buffer = null;
             if(socket_recv($socket, $buffer, 1024, 0) >= 1) {
                 
-                if(FALSE && $this->taskManager){
-                    $response = $this->taskManager->socketRequest($buffer);
+                if($this->callback){
+                    $response = call_user_func($this->callback,$buffer);
                     $this->sendMessage($response, array($socket));
                 }else{
                     $this->sendMessage(trim($buffer) . PHP_EOL, $this->getOtherClients($socket));

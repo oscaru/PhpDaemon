@@ -15,7 +15,8 @@ class Daemon {
     
 
     protected static  $instance = null;
-    
+    protected $socketHost = '127.0.0.1';
+    protected $socketPort = '9000';
 
     protected  $signHandlers = array();
     protected  $signalAllowed = array(
@@ -47,20 +48,20 @@ class Daemon {
         $this->checkins();
         $this->daemonize();
           
-  
-        if($this->taskManager){
-            $server = new \Core\SocketServer();
-            $server->setTaskManager($this->taskManager);
-            $this->socketServer = $server;
+        $server = new \Core\SocketServer();
+        $server->setCallBack(array($this,'command'));
+        $this->socketServer = $server;
             
-        }
+        
         
      
         $this->runLoop();
         
     }
     
-
+    /**
+     * Comprobaciones de requirimientos
+     */
     public function checkins()
 
     {
@@ -89,6 +90,14 @@ class Daemon {
     }
     
     
+    public function command($message){
+        try {
+            
+        }catch (Exception $e){
+            
+        }
+        
+    }
 
 
     public  function daemonize()
@@ -206,6 +215,8 @@ class Daemon {
         $now = date('Y-m-d H:i:s');
         echo "{$now} >> DEBUG : {$string} \n";
     }
+    
+    
     
     
     
